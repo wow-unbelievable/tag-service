@@ -7,7 +7,7 @@ import (
 	pb "github.com/wow-unbelievable/tag-service/proto"
 )
 
-type TagServer struct {}
+type TagServer struct{}
 
 func NewTagServer() *TagServer {
 	return &TagServer{}
