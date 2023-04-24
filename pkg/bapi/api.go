@@ -4,13 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/wow-unbelievable/tag-service/pkg/errcode"
 	"io"
 	"net/http"
 	"net/url"
 )
 
 const (
-	APP_KEY  = "abv"
+	APP_KEY    = "abv"
 	APP_SECRET = "asdz"
 )
 
@@ -28,6 +29,9 @@ func NewApi(url string) *API {
 
 func (a *API) httpGet(ctx context.Context, path string) ([]byte, error) {
 	resp, err := http.Get(fmt.Sprintf("%s/%s", a.URL, path))
+	if err != nil {
+		return nil, errcode.TogRPCError(errcode.ErrorGetTagListFail)
+	}
 	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
@@ -36,8 +40,11 @@ func (a *API) httpGet(ctx context.Context, path string) ([]byte, error) {
 	return body, nil
 }
 
-func (a *API) httpPost(ctx context.Context, path string,form url.Values) ([]byte, error) {
-	resp, err := http.PostForm(fmt.Sprintf("%s/%s", a.URL, path),form)
+func (a *API) httpPost(ctx context.Context, path string, form url.Values) ([]byte, error) {
+	resp, err := http.PostForm(fmt.Sprintf("%s/%s", a.URL, path), form)
+	if err != nil {
+		return nil, errcode.TogRPCError(errcode.ErrorGetTokenFail)
+	}
 	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
@@ -49,8 +56,8 @@ func (a *API) httpPost(ctx context.Context, path string,form url.Values) ([]byte
 func (a *API) getAccessToken(ctx context.Context) (string, error) {
 	form := url.Values{}
 	form.Set("app_key", APP_KEY)
-	form.Set("app_secret",APP_SECRET)
-	body, err := a.httpPost(ctx, fmt.Sprintf("%s", "auth"),form)
+	form.Set("app_secret", APP_SECRET)
+	body, err := a.httpPost(ctx, fmt.Sprintf("%s", "auth"), form)
 	if err != nil {
 		return "", err
 	}

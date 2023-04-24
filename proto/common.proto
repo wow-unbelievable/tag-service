@@ -14,6 +14,6 @@ message Pager {
 
 message Error {
   int32 code = 1;
-  string massage = 2;
+  string message = 2;
   google.protobuf.Any detail = 3;
 }
